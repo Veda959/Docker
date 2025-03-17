@@ -2,7 +2,7 @@
 FROM node:18-alpine 
 
 # Run the upgrade command to uudate all the dependencies
-RUN yum upgrade -y
+RUN apt-get update && apt-get upgrade -y
 
 # Set the working directory inside the container
 WORKDIR /app

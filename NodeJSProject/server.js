@@ -3,7 +3,7 @@ const sqlite3 = require('sqlite3').verbose();  // Import sqlite3
 const bodyParser = require('body-parser');
 const path = require('path');
 
-  const dbPath = path.join("/app", "users.db"); // Modify this if needed
+  const dbPath = path.join(_dirname, 'users.db'); // Modify this if needed
 console.log("Using database file:", dbPath); // Log the path
 
   // Create a connection to the SQLite database

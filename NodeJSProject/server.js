@@ -3,17 +3,23 @@ const sqlite3 = require('sqlite3').verbose();  // Import sqlite3
 const bodyParser = require('body-parser');
 const path = require('path');
 
-  const dbPath = path.join(__dirname, 'users.db'); // Modify this if needed
-console.log("Using database file:", dbPath); // Log the path
+// Initialize Express app
+const app = express();
+const port = 3000;
 
-  // Create a connection to the SQLite database
+// Middleware to parse POST request data
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParse.json());
+
+const dbPath = path.join(__dirname, 'users.db'); // Modify this if needed
+
+  // Initialize SQLite database (use path to local file)
 const db = new sqlite3.Database(dbPath, (err) => {  // Database file
-  
-  if (err) {
+    if (err) {
     console.error('Error opening database:', err.message);
-    return;
-  }
+  } else{
   console.log('Connected to the SQLite database');
+    }
 });
 
 // Create the 'users' table if it doesn't exist (for the first time)
@@ -25,12 +31,7 @@ db.run(`
   )
 `);
 
-// Initialize Express app
-const app = express();
-const port = 3000;
 
-// Middleware to parse POST request data
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve the HTML form
 app.get('/', (req, res) => {
@@ -41,6 +42,9 @@ app.get('/', (req, res) => {
 app.post('/submit', (req, res) => {
   const { name, age } = req.body;
 
+if(!name || !age) {
+  return.res.status(400).send('Name and Age are required');
+}
   // SQL query to insert data into the 'users' table
   const query = 'INSERT INTO users (name, age) VALUES (?, ?)';
 
@@ -52,6 +56,17 @@ app.post('/submit', (req, res) => {
     }
     console.log('User data inserted:', this.lastID);
     res.send('<h1>Data Submitted Successfully!</h1><a href="/">Go Back</a>');
+  });
+});
+
+// Endpoint to fetch all the data
+app.get('/users', (req, res) => {
+  db.all('SELECT * FROM users', [], (err, rows) => {
+    if (err) {
+      console.error('Error retrieving data:', err);
+      return res.status(500).send('Error retrieving data');
+    }
+    res.json(rows);
   });
 });
 

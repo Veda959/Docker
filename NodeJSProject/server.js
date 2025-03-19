@@ -40,8 +40,8 @@ app.get('/', (req, res) => {
 
 // Handle the POST request to submit user data
 app.post('/submit', (req, res) => {
+  console.log(req.body); //Log the data received
   const { name, age } = req.body;
-
 if(!name || !age) {
   return.res.status(400).send('Name and Age are required');
 }

@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install sqlite3 && npm install 
+RUN npm install 
 
 # Copy the rest of the application files
 COPY . .
